@@ -1,0 +1,25 @@
+[project]
+name = "flyvis_tutorial"
+version = "0.1.0"
+description = "Tutorial materials for simulating fly vision with deep learning"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "FlyVis Tutorial Contributors"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Education",
+]
+# pin to make compatible with python installation of the body tutorial, but not strictly required
+# for the visual system tutorial alone
+requires-python = "==3.11.*"
+dependencies = [
+    "flyvis[dev,examples]",
+]
