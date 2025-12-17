@@ -1,7 +1,7 @@
 [project]
-name = "flyvis_tutorial"
+name = "flysim-tutorials"
 version = "0.1.0"
-description = "Tutorial materials for simulating fly vision with deep learning"
+description = "Tutorial materials for simulating fly brain and body with deep learning"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
@@ -22,4 +22,9 @@ classifiers = [
 requires-python = "==3.11.*"
 dependencies = [
     "flyvis[dev,examples]",
+    "dandi",
+    "pynwb",
+    "h5py",
+    "imageio",
+    "opencv-python",
 ]
