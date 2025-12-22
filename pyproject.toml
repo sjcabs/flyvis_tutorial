@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "flysim-tutorials"
 version = "0.1.0"
@@ -28,3 +32,8 @@ dependencies = [
     "imageio",
     "opencv-python",
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["flyvis_tutorial*"]
+exclude = ["tests*"]
