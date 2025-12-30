@@ -8,6 +8,70 @@ import numpy as np
 import cv2
 
 
+def load_nwb_data(
+    bucket_name: str,
+    blob_path: str,
+    data_root: Path = Path("data"),
+    dandiset_id: str = "000951",
+    nwb_index: int = 0,
+) -> Path:
+    """
+    Load NWB data, trying Google Cloud Storage first, then falling back to DANDI.
+    
+    This function first attempts to download the NWB file from a Google Cloud Storage
+    bucket. If that fails (e.g., bucket not accessible, file doesn't exist, or 
+    google-cloud-storage not installed), it falls back to downloading from DANDI.
+    
+    Args:
+        data_root: Root directory for downloaded data
+        bucket_name: Google Cloud Storage bucket name
+        blob_path: Path to the NWB file within the bucket
+        dandiset_id: DANDI dataset ID (used as fallback)
+        nwb_index: Index of the NWB file to download from DANDI (used as fallback)
+        
+    Returns:
+        Path to the downloaded NWB file
+    """
+    # Determine local file path
+    local_filename = Path(blob_path).name
+    local_path = data_root / local_filename
+    local_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Check if already downloaded
+    if local_path.exists():
+        print(f"Already downloaded: {local_path}")
+        return local_path
+    
+    # Try Google Cloud Storage first
+    try:
+        from google.cloud import storage
+        
+        print(f"Attempting to download from Google Cloud Storage bucket '{bucket_name}'...")
+        client = storage.Client()
+        bucket = client.bucket(bucket_name)
+        blob = bucket.blob(blob_path)
+        
+        # Check if blob exists before downloading
+        if blob.exists():
+            blob.download_to_filename(str(local_path))
+            print(f"Downloaded from GCS: {local_path}")
+            return local_path
+        else:
+            print(f"Blob '{blob_path}' not found in bucket '{bucket_name}', falling back to DANDI...")
+            
+    except ImportError:
+        print("google-cloud-storage not installed, falling back to DANDI...")
+    except Exception as e:
+        print(f"GCS download failed ({type(e).__name__}: {e}), falling back to DANDI...")
+    
+    # Fallback to DANDI
+    return download_nwb_from_dandi(
+        dandiset_id=dandiset_id,
+        nwb_index=nwb_index,
+        data_root=data_root,
+    )
+
+
 def download_nwb_from_dandi(
     dandiset_id: str = "000951",
     nwb_index: int = 0,
